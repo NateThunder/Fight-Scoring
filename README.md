@@ -6,7 +6,7 @@ Tools and smart contracts for registering fighters and judges, creating matches,
 
 A small Solidity project that explores how combat sports scoring could work on Ethereum. It separates responsibilities into simple contracts:
 
-- **FighterReg.sol** — register fighters and look them up.
+- **FighterReg.sol** — register fighters and look them up (will be replaced with oricle).
 - **JudgeReg.sol** — register approved judges.
 - **MatchReg.sol** — create and track matches, link fighters and judges.
 - **Scoring.sol** — submit and aggregate round scores for a match.
