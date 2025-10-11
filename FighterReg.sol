@@ -40,7 +40,7 @@ contract FighterReg is JudgeReg {
 
 
 // Register fighter ===============================================    
-    function _registerMMAFighter(string memory _name, uint32 _wins, uint32 _losses, uint32 _draws, uint16 _nc, uint8 _weight) internal {
+    function _registerMMAFighter(string memory _name, uint32 _wins, uint32 _losses, uint32 _draws, uint16 _nc, uint8 _weight) public {
         fighters.push(MMAfighter(_name, _wins, _losses, _draws, _nc, _weight));
         uint256 id = fighters.length - 1;
         fighterToOwner[id] = msg.sender;

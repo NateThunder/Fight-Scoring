@@ -1,0 +1,529 @@
+{
+	"compiler": {
+		"version": "0.8.30+commit.73712a01"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "owner",
+						"type": "address"
+					}
+				],
+				"name": "OwnableInvalidOwner",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "OwnableUnauthorizedAccount",
+				"type": "error"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "fightId",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "roundId",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint8",
+						"name": "scoreA",
+						"type": "uint8"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint8",
+						"name": "scoreB",
+						"type": "uint8"
+					}
+				],
+				"name": "FightScore",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "fighterId",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "fighterName",
+						"type": "string"
+					}
+				],
+				"name": "NewFighter",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "judgeId",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "judgeName",
+						"type": "string"
+					}
+				],
+				"name": "NewJudge",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "_matchId",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "_fighterAId",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "_fighterBId",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "_rounds",
+						"type": "uint256"
+					}
+				],
+				"name": "NewMatch",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "previousOwner",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "newOwner",
+						"type": "address"
+					}
+				],
+				"name": "OwnershipTransferred",
+				"type": "event"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "_name",
+						"type": "string"
+					}
+				],
+				"name": "_registerJudge",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "_name",
+						"type": "string"
+					},
+					{
+						"internalType": "uint32",
+						"name": "_wins",
+						"type": "uint32"
+					},
+					{
+						"internalType": "uint32",
+						"name": "_losses",
+						"type": "uint32"
+					},
+					{
+						"internalType": "uint32",
+						"name": "_draws",
+						"type": "uint32"
+					},
+					{
+						"internalType": "uint16",
+						"name": "_nc",
+						"type": "uint16"
+					},
+					{
+						"internalType": "uint8",
+						"name": "_weight",
+						"type": "uint8"
+					}
+				],
+				"name": "_registerMMAFighter",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "fighterToOwner",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "fighters",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "name",
+						"type": "string"
+					},
+					{
+						"internalType": "uint32",
+						"name": "win",
+						"type": "uint32"
+					},
+					{
+						"internalType": "uint32",
+						"name": "loss",
+						"type": "uint32"
+					},
+					{
+						"internalType": "uint32",
+						"name": "draw",
+						"type": "uint32"
+					},
+					{
+						"internalType": "uint16",
+						"name": "noContest",
+						"type": "uint16"
+					},
+					{
+						"internalType": "uint8",
+						"name": "weightCategoryLbs",
+						"type": "uint8"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_fightId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_roundId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint8",
+						"name": "_scoreA",
+						"type": "uint8"
+					},
+					{
+						"internalType": "uint8",
+						"name": "_scoreB",
+						"type": "uint8"
+					}
+				],
+				"name": "judgeScore",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "judgeToOwner",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "judges",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "name",
+						"type": "string"
+					},
+					{
+						"internalType": "uint16",
+						"name": "rank",
+						"type": "uint16"
+					},
+					{
+						"internalType": "uint32",
+						"name": "rightDecision",
+						"type": "uint32"
+					},
+					{
+						"internalType": "uint16",
+						"name": "wrongDecision",
+						"type": "uint16"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "matches",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "fighterAId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "fighterBId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint8",
+						"name": "rounds",
+						"type": "uint8"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "owner",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "renounceOwnership",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_fighterAId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_fighterBId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint8",
+						"name": "_rounds",
+						"type": "uint8"
+					}
+				],
+				"name": "setMatch",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "newOwner",
+						"type": "address"
+					}
+				],
+				"name": "transferOwnership",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"errors": {
+				"OwnableInvalidOwner(address)": [
+					{
+						"details": "The owner is not a valid owner account. (eg. `address(0)`)"
+					}
+				],
+				"OwnableUnauthorizedAccount(address)": [
+					{
+						"details": "The caller account is not authorized to perform an operation."
+					}
+				]
+			},
+			"kind": "dev",
+			"methods": {
+				"owner()": {
+					"details": "Returns the address of the current owner."
+				},
+				"renounceOwnership()": {
+					"details": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby disabling any functionality that is only available to the owner."
+				},
+				"transferOwnership(address)": {
+					"details": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner."
+				}
+			},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"Scoring.sol": "Scoring"
+		},
+		"evmVersion": "prague",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"@openzeppelin/contracts/access/Ownable.sol": {
+			"keccak256": "0xff6d0bb2e285473e5311d9d3caacb525ae3538a80758c10649a4d61029b017bb",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://8ed324d3920bb545059d66ab97d43e43ee85fd3bd52e03e401f020afb0b120f6",
+				"dweb:/ipfs/QmfEckWLmZkDDcoWrkEvMWhms66xwTLff9DDhegYpvHo1a"
+			]
+		},
+		"@openzeppelin/contracts/utils/Context.sol": {
+			"keccak256": "0x493033a8d1b176a037b2cc6a04dad01a5c157722049bbecf632ca876224dd4b2",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://6a708e8a5bdb1011c2c381c9a5cfd8a9a956d7d0a9dc1bd8bcdaf52f76ef2f12",
+				"dweb:/ipfs/Qmax9WHBnVsZP46ZxEMNRQpLQnrdE4dK8LehML1Py8FowF"
+			]
+		},
+		"JudgeReg.sol": {
+			"keccak256": "0x889ab68b70df5887f868ff9280b6fca22446b9742b8d13d028379839d76f9479",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://67db93e93454890fff6ce8ccb302f8b93ecad5cd4b2698e9ce138e3543b08941",
+				"dweb:/ipfs/QmUjkZ35JVCc2TsDqwUWxgPPPppuLyDZU1GDq9osEvv5CR"
+			]
+		},
+		"Scoring.sol": {
+			"keccak256": "0xd8a675e7eb5eeb8a3fcd49760e6c645d37ac67d314f328939a08a1e2b373e9bc",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://0352f3ac0f1939604a3692e22817790e126dab456c93050da4f658d6e062954e",
+				"dweb:/ipfs/QmfRHwg6RgpZ6TBiq44tZZ1gGxCQBtsc46NCxeNmpsukSG"
+			]
+		},
+		"fighterreg.sol": {
+			"keccak256": "0xb8234a3104e770f1ed5408f40d3496e1aae43e8cdaa963d9dd35e603d0dce65b",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://8f25b8d27dd10484077da80de16d2118d4592e865c38a43434da6ef06efb2ec3",
+				"dweb:/ipfs/QmeoGj6RHTLFpkxcoNjxeS98ouwdBULMKdUti68m8MA8dv"
+			]
+		},
+		"matchreg.sol": {
+			"keccak256": "0xb9594d88fe1a55cca3c85007f797f5a8dc303c73d04382dfda040432ee68735c",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://86bb0e888b991d71b7c293eb7131e8a03d6d2e8246de1e9a5985e1161fb3747d",
+				"dweb:/ipfs/QmezR2wxLBadNGfG4VLF7qrCgzapf3fapEsqy4ahEdhJCc"
+			]
+		}
+	},
+	"version": 1
+}

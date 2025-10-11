@@ -8,11 +8,13 @@ import "./matchreg.sol";
 
 contract Scoring is MatchReg {
 
-    uint8 public constant roundsAmount = 5;// matches.rounds;
+    event FightScore(uint fightId, uint roundId, uint8 scoreA, uint8 scoreB);
 
     struct Fight {
-        uint[roundsAmount] fighterAScore;
-        uint[roundsAmount] fighterBScore;
+        uint fightId;
+        uint roundId;
+        uint fighterAScore;
+        uint fighterBScore;
     }
 
     Fight[] private fights;    
@@ -23,8 +25,14 @@ contract Scoring is MatchReg {
     }
 
     function judgeScore(uint _fightId, uint _roundId, uint8 _scoreA, uint8 _scoreB) public scoreLimit(_scoreA, _scoreB) {
-
-        fights[_fightId].fighterAScore[_roundId] = _scoreA;
-        fights[_fightId].fighterBScore[_roundId] = _scoreB;
+        require(_roundId < matches[_fightId].rounds, "Invalid Rounds");
+        fights.push(Fight({
+            fightId: _fightId,
+            roundId: _roundId,
+            fighterAScore: _scoreA,
+            fighterBScore: _scoreB
+        }));
+        
+        emit FightScore(_fightId, _roundId, _scoreA, _scoreB);
     }
     }
