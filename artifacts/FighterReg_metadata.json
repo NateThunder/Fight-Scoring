@@ -6,6 +6,11 @@
 	"output": {
 		"abi": [
 			{
+				"inputs": [],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "address",
@@ -133,6 +138,50 @@
 				"name": "_registerMMAFighter",
 				"outputs": [],
 				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "fighterIdToFighter",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "name",
+						"type": "string"
+					},
+					{
+						"internalType": "uint32",
+						"name": "win",
+						"type": "uint32"
+					},
+					{
+						"internalType": "uint32",
+						"name": "loss",
+						"type": "uint32"
+					},
+					{
+						"internalType": "uint32",
+						"name": "draw",
+						"type": "uint32"
+					},
+					{
+						"internalType": "uint16",
+						"name": "noContest",
+						"type": "uint16"
+					},
+					{
+						"internalType": "uint8",
+						"name": "weightCategoryLbs",
+						"type": "uint8"
+					}
+				],
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -351,11 +400,11 @@
 			]
 		},
 		"FighterReg.sol": {
-			"keccak256": "0xb8234a3104e770f1ed5408f40d3496e1aae43e8cdaa963d9dd35e603d0dce65b",
+			"keccak256": "0xadf6fa62d3704d91018878ccd956fac5ce1bdf9f96a8e27f41d2871bd0284841",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://8f25b8d27dd10484077da80de16d2118d4592e865c38a43434da6ef06efb2ec3",
-				"dweb:/ipfs/QmeoGj6RHTLFpkxcoNjxeS98ouwdBULMKdUti68m8MA8dv"
+				"bzz-raw://511cfda7505e3b3ea6c2f5c177e5d183cd517096178070a8fa026f9b44e3500a",
+				"dweb:/ipfs/QmZD275jpmpXm1NJ3SPY2mep854Q2t3FX8UehQM1kmQPD7"
 			]
 		},
 		"JudgeReg.sol": {

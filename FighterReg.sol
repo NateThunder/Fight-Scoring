@@ -27,8 +27,17 @@ contract FighterReg is JudgeReg {
 // defining an array for Judges and MMA fighters =================
     MMAfighter[] public fighters;
 
+// index position 1 in the array in case of a draw to avoid confusion 
+
+    constructor() {
+    // Push a dummy fighter at index 0
+    fighters.push(MMAfighter("", 0, 0, 0, 0, 0));
+}
+
+
 // Mapping of users to ID number =============================
     mapping (uint => address) public fighterToOwner;    
+    mapping (uint => MMAfighter) public fighterIdToFighter;
     mapping (address => uint256) fighterbalance;
 
 // Modifier of fighter requiring owner ===============================

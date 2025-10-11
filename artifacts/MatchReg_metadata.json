@@ -131,6 +131,44 @@
 			{
 				"inputs": [
 					{
+						"internalType": "string",
+						"name": "_name",
+						"type": "string"
+					},
+					{
+						"internalType": "uint32",
+						"name": "_wins",
+						"type": "uint32"
+					},
+					{
+						"internalType": "uint32",
+						"name": "_losses",
+						"type": "uint32"
+					},
+					{
+						"internalType": "uint32",
+						"name": "_draws",
+						"type": "uint32"
+					},
+					{
+						"internalType": "uint16",
+						"name": "_nc",
+						"type": "uint16"
+					},
+					{
+						"internalType": "uint8",
+						"name": "_weight",
+						"type": "uint8"
+					}
+				],
+				"name": "_registerMMAFighter",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "uint256",
 						"name": "",
 						"type": "uint256"
@@ -395,6 +433,14 @@
 				"dweb:/ipfs/Qmax9WHBnVsZP46ZxEMNRQpLQnrdE4dK8LehML1Py8FowF"
 			]
 		},
+		"FighterReg.sol": {
+			"keccak256": "0xb8234a3104e770f1ed5408f40d3496e1aae43e8cdaa963d9dd35e603d0dce65b",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://8f25b8d27dd10484077da80de16d2118d4592e865c38a43434da6ef06efb2ec3",
+				"dweb:/ipfs/QmeoGj6RHTLFpkxcoNjxeS98ouwdBULMKdUti68m8MA8dv"
+			]
+		},
 		"JudgeReg.sol": {
 			"keccak256": "0x889ab68b70df5887f868ff9280b6fca22446b9742b8d13d028379839d76f9479",
 			"license": "MIT",
@@ -404,19 +450,11 @@
 			]
 		},
 		"MatchReg.sol": {
-			"keccak256": "0xb9594d88fe1a55cca3c85007f797f5a8dc303c73d04382dfda040432ee68735c",
+			"keccak256": "0x64b5d78e52bcfe6296bf03b9a360e9c2e3fb79b76799d033b4c2da328c1abfb8",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://86bb0e888b991d71b7c293eb7131e8a03d6d2e8246de1e9a5985e1161fb3747d",
-				"dweb:/ipfs/QmezR2wxLBadNGfG4VLF7qrCgzapf3fapEsqy4ahEdhJCc"
-			]
-		},
-		"fighterreg.sol": {
-			"keccak256": "0x9b6377697a6cc0037597a2811aeb9aafde11a9cf99139f4d5a06cfb37cfdf8ba",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://e96ae2a2ed7e674e74e76aa4e4a546df1efe5770fce375ae8a5954792d6de551",
-				"dweb:/ipfs/QmccQf3FiqZ1Guj37xY2EeqLnuFzpAV4fK9j1F2tx3j7eH"
+				"bzz-raw://dc2853a581724325a9db55363c955dcfe68b0fce678381f10ee132c18440c747",
+				"dweb:/ipfs/QmXpA6Nf6B5rfPqdPc9KWPUfRotoXzBAiYFHZpbtKVNaAk"
 			]
 		}
 	},

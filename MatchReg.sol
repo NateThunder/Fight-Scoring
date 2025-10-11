@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.26;
 
-import "./fighterreg.sol";
+import "./FighterReg.sol";
 
 contract MatchReg is FighterReg{
 

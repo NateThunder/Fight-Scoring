@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.26;
 
-import "./matchreg.sol";
+import "./MatchReg.sol";
 
 // contract for scoring the fight =============================
 
@@ -32,7 +32,36 @@ contract Scoring is MatchReg {
             fighterAScore: _scoreA,
             fighterBScore: _scoreB
         }));
-        
+
         emit FightScore(_fightId, _roundId, _scoreA, _scoreB);
     }
+
+    function winner(uint _fightId) public view returns (uint, string memory) {
+        uint scoreA = 0;
+        uint scoreB = 0;
+        uint winnerId;
+        string memory winnerName;
+
+        for (uint x = 0; x < fights.length; x++) {
+            if (fights[x].fightId == _fightId) {
+                scoreA += fights[x].fighterAScore;
+                scoreB += fights[x].fighterBScore;
+            }
+        }
+
+        if (scoreA > scoreB) {
+            winnerId = matches[_fightId].fighterAId;
+            winnerName = (fighters[winnerId].name);
+        } else if (scoreB > scoreA) {
+            winnerId = matches[_fightId].fighterBId;
+            winnerName = (fighters[winnerId].name);
+        } else {
+            return (0,"draw");
+        }
+
+        return (winnerId, winnerName);
+
+    }
+
+
     }

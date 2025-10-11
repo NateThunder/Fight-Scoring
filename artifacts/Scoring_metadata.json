@@ -205,6 +205,50 @@
 						"type": "uint256"
 					}
 				],
+				"name": "fighterIdToFighter",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "name",
+						"type": "string"
+					},
+					{
+						"internalType": "uint32",
+						"name": "win",
+						"type": "uint32"
+					},
+					{
+						"internalType": "uint32",
+						"name": "loss",
+						"type": "uint32"
+					},
+					{
+						"internalType": "uint32",
+						"name": "draw",
+						"type": "uint32"
+					},
+					{
+						"internalType": "uint16",
+						"name": "noContest",
+						"type": "uint16"
+					},
+					{
+						"internalType": "uint8",
+						"name": "weightCategoryLbs",
+						"type": "uint8"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
 				"name": "fighterToOwner",
 				"outputs": [
 					{
@@ -425,6 +469,30 @@
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_fightId",
+						"type": "uint256"
+					}
+				],
+				"name": "winner",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
 			}
 		],
 		"devdoc": {
@@ -492,6 +560,14 @@
 				"dweb:/ipfs/Qmax9WHBnVsZP46ZxEMNRQpLQnrdE4dK8LehML1Py8FowF"
 			]
 		},
+		"FighterReg.sol": {
+			"keccak256": "0xadf6fa62d3704d91018878ccd956fac5ce1bdf9f96a8e27f41d2871bd0284841",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://511cfda7505e3b3ea6c2f5c177e5d183cd517096178070a8fa026f9b44e3500a",
+				"dweb:/ipfs/QmZD275jpmpXm1NJ3SPY2mep854Q2t3FX8UehQM1kmQPD7"
+			]
+		},
 		"JudgeReg.sol": {
 			"keccak256": "0x889ab68b70df5887f868ff9280b6fca22446b9742b8d13d028379839d76f9479",
 			"license": "MIT",
@@ -500,28 +576,20 @@
 				"dweb:/ipfs/QmUjkZ35JVCc2TsDqwUWxgPPPppuLyDZU1GDq9osEvv5CR"
 			]
 		},
+		"MatchReg.sol": {
+			"keccak256": "0x64b5d78e52bcfe6296bf03b9a360e9c2e3fb79b76799d033b4c2da328c1abfb8",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://dc2853a581724325a9db55363c955dcfe68b0fce678381f10ee132c18440c747",
+				"dweb:/ipfs/QmXpA6Nf6B5rfPqdPc9KWPUfRotoXzBAiYFHZpbtKVNaAk"
+			]
+		},
 		"Scoring.sol": {
-			"keccak256": "0xd8a675e7eb5eeb8a3fcd49760e6c645d37ac67d314f328939a08a1e2b373e9bc",
+			"keccak256": "0xd188aadcc4d19f6f856dcdb5098f6e35cd3f166dd3f5e167caa588c79db710e4",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://0352f3ac0f1939604a3692e22817790e126dab456c93050da4f658d6e062954e",
-				"dweb:/ipfs/QmfRHwg6RgpZ6TBiq44tZZ1gGxCQBtsc46NCxeNmpsukSG"
-			]
-		},
-		"fighterreg.sol": {
-			"keccak256": "0xb8234a3104e770f1ed5408f40d3496e1aae43e8cdaa963d9dd35e603d0dce65b",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://8f25b8d27dd10484077da80de16d2118d4592e865c38a43434da6ef06efb2ec3",
-				"dweb:/ipfs/QmeoGj6RHTLFpkxcoNjxeS98ouwdBULMKdUti68m8MA8dv"
-			]
-		},
-		"matchreg.sol": {
-			"keccak256": "0xb9594d88fe1a55cca3c85007f797f5a8dc303c73d04382dfda040432ee68735c",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://86bb0e888b991d71b7c293eb7131e8a03d6d2e8246de1e9a5985e1161fb3747d",
-				"dweb:/ipfs/QmezR2wxLBadNGfG4VLF7qrCgzapf3fapEsqy4ahEdhJCc"
+				"bzz-raw://08bad0d65bda1cad38c853d67cff035056d13f5c4c1fcb370b9b7970817a9598",
+				"dweb:/ipfs/QmNpbhWNZUafoLaDwNutwJugHppfGtcePEx1QtPeyzNhgK"
 			]
 		}
 	},
