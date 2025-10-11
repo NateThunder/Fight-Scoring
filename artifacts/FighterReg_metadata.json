@@ -314,6 +314,25 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "ownerToJudge",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "renounceOwnership",
 				"outputs": [],
@@ -408,11 +427,11 @@
 			]
 		},
 		"JudgeReg.sol": {
-			"keccak256": "0x889ab68b70df5887f868ff9280b6fca22446b9742b8d13d028379839d76f9479",
+			"keccak256": "0x2ec12242cc4eadda7397720badc15cd68a5f1c7145a6a1fb4326ef2d398c3575",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://67db93e93454890fff6ce8ccb302f8b93ecad5cd4b2698e9ce138e3543b08941",
-				"dweb:/ipfs/QmUjkZ35JVCc2TsDqwUWxgPPPppuLyDZU1GDq9osEvv5CR"
+				"bzz-raw://5b77cec85d7143a8398516b599fe07c8d4f9f92db9e5197a9ebe269ce357f0eb",
+				"dweb:/ipfs/QmerxfuDWpm9HMcXAKn1HdfoNARs9JichqgKvJNAWsEFYi"
 			]
 		}
 	},
