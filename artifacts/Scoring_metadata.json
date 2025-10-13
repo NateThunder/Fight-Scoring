@@ -609,19 +609,19 @@
 			]
 		},
 		"JudgeReg.sol": {
-			"keccak256": "0x172e28696505cd50349abc6a8b548a2b2158cc0e5950d5e7c70b6c85969170c9",
+			"keccak256": "0xb813883a7ec817e1e46efe8e31bfef09b4b65d6948744d22c983c8a929514c4d",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://480dd8fa49b3ae159ef6c6ca37707279bc444cbdd5c8a21491ddebfd672554ec",
-				"dweb:/ipfs/QmYoUtZm4wL9EYarMyaXiuXRiV4TAdz97WdFTX2hQmMdUm"
+				"bzz-raw://13221af1b180634750a840995976c70f5ac25ade060e48eed6e9e0c3ed41330a",
+				"dweb:/ipfs/QmYzseKveMddu31JPQhL4ANAw6Qvf94FScgZ8Qvcv5iykm"
 			]
 		},
 		"MatchReg.sol": {
-			"keccak256": "0x64b5d78e52bcfe6296bf03b9a360e9c2e3fb79b76799d033b4c2da328c1abfb8",
+			"keccak256": "0xa0b27cd605e9ef92efc46e731d4bc14a75a40e89bb257e2125a45dffa787893c",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://dc2853a581724325a9db55363c955dcfe68b0fce678381f10ee132c18440c747",
-				"dweb:/ipfs/QmXpA6Nf6B5rfPqdPc9KWPUfRotoXzBAiYFHZpbtKVNaAk"
+				"bzz-raw://aeeb3bce39e6e0ca47dbd6f25626b385b2644d248f56cf75786e048e97f6565c",
+				"dweb:/ipfs/QmaVG8MET7vchBaiqgoMr85MEYxjhycRKeSzNGrUsVks1g"
 			]
 		},
 		"Scoring.sol": {
