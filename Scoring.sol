@@ -4,33 +4,33 @@ pragma solidity ^0.8.26;
 
 import "./MatchReg.sol";
 
-// contract for scoring the fight ===========================================================
+// contract for scoring the fight ====================================================================
 
 contract Scoring is MatchReg {
 
     event FightScore(uint fightId, uint roundId, uint8 scoreA, uint8 scoreB, uint judgeId);
 
-// struct for judges scorecard ===============================================================
+// struct for judges scorecard =======================================================================
 
     struct Fight {
-        uint fightId;
+        uint fightId; // fightId = matches[fightId]
         uint roundId;
         uint fighterAScore;
         uint fighterBScore;
-        uint judgeId;
+        uint judgeId; // judges[judgesId].name
     }
 
     Fight[] private fights;    // array of fight struct
     
     
-// Modifier to make sure score is within limit ------------------------------------------------
+// Modifier to make sure score is within limit -------------------------------------------------------
 
     modifier scoreLimit(uint _scoreA, uint8 _scoreB){
         require(_scoreA < 11 && _scoreB < 11, "maximum Score is 10");
         _;
     }
 
-// Function for the score card  -----------------------------------------------------------------
+// Function for the score card  ----------------------------------------------------------------------
 
     function judgeScore(uint _fightId, uint _roundId, uint8 _scoreA, uint8 _scoreB, uint _judgeId) public scoreLimit(_scoreA, _scoreB) onlyJudge(_judgeId) {
         require(_roundId < matches[_fightId].rounds, "Invalid Rounds");
@@ -47,14 +47,14 @@ contract Scoring is MatchReg {
 
 // function to calvulate the winner based on the scorecard ------------------------------------------
 
-    function winner(uint _fightId) public view returns (uint, string memory) { // view function for gas saving
+    function judgeWinner(uint _fightId, uint _judgeId) public view returns (uint, string memory, string memory) { // view function for gas saving
         uint scoreA = 0;
         uint scoreB = 0;
         uint winnerId;
         string memory winnerName;
 
         for (uint x = 0; x < fights.length; x++) {
-            if (fights[x].fightId == _fightId) {
+            if (fights[x].fightId == _fightId && fights[x].judgeId == _judgeId) {
                 scoreA += fights[x].fighterAScore;
                 scoreB += fights[x].fighterBScore;
             }
@@ -67,10 +67,12 @@ contract Scoring is MatchReg {
             winnerId = matches[_fightId].fighterBId;
             winnerName = (fighters[winnerId].name);
         } else {
-            return (0,"draw");
+            return (0,"draw", judges[_judgeId].name);
         }
 
-        return (winnerId, winnerName);
+        
+
+        return (winnerId, winnerName, judges[_judgeId].name);
 
     }
 

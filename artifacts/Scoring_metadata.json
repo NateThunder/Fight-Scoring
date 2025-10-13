@@ -366,6 +366,40 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
+						"name": "_fightId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_judgeId",
+						"type": "uint256"
+					}
+				],
+				"name": "judgeWinner",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
 						"name": "",
 						"type": "uint256"
 					}
@@ -499,30 +533,6 @@
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "_fightId",
-						"type": "uint256"
-					}
-				],
-				"name": "winner",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					},
-					{
-						"internalType": "string",
-						"name": "",
-						"type": "string"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
 			}
 		],
 		"devdoc": {
@@ -615,11 +625,11 @@
 			]
 		},
 		"Scoring.sol": {
-			"keccak256": "0x94d9a0fd502bd20fb83578eee847e6ef631cee3fa84af18b1aed14ea187b7c4f",
+			"keccak256": "0x6dbd0ac130f5d1a838bbb66a92479e6df3dc8a76ad54d88780261243b10e29b6",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://6b058451664ca898d281d733ab88d9a17a23da8433048477a856d402d851a594",
-				"dweb:/ipfs/QmcKPM25me7CJTQkf52eZJYkwaqRBXprM9LQQyj8CSLCBV"
+				"bzz-raw://1e309f64f51cdb23955a84094432d2dcdaef3be0d77fb5897620b0ba9afb8467",
+				"dweb:/ipfs/QmZEwNr8KiFfRteCLKXxsaQJUQK4mMjucVdcJPevEayAro"
 			]
 		}
 	},

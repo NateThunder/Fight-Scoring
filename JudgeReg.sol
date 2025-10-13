@@ -9,7 +9,7 @@ contract JudgeReg is Ownable {
 // Constructor to link to openzepplin code ============================    
     constructor() Ownable(msg.sender) {}
 
-// Event to be able to oeasili be seen on system ======================
+// Event to be able to easily be seen on system ======================
     event NewJudge(uint judgeId, string judgeName);
 
 // Getting the databse of fighters and judges =========================
@@ -31,7 +31,7 @@ contract JudgeReg is Ownable {
 // Setting modifier for the owner of for the judges ====================
 
     modifier onlyJudge(uint _judgeId) {
-        require(msg.sender == judgeToOwner[_judgeId]);
+        require(msg.sender == judgeToOwner[_judgeId], "Wrong judge address");
         _;
     }
 
