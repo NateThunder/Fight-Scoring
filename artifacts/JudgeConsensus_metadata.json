@@ -620,25 +620,6 @@
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"name": "winCount",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
 			}
 		],
 		"devdoc": {
@@ -715,11 +696,11 @@
 			]
 		},
 		"JudgeConsensus.sol": {
-			"keccak256": "0xe7f61815de1216635428ecf785b01362cf55ce6c1f19187459c6033fe86c1d0d",
+			"keccak256": "0xf5592a02937f4ea1975d058805fa025647aea179b282baa8f18cf1462edb6602",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://591d3555e3bc8ba400c51d4a15de48b34f89a7097de21b43ed688ceb8d5a55e1",
-				"dweb:/ipfs/QmeKWy3oKu45YYffwwMNFymJR3jBMFxRPKJnw3tNDzjPqg"
+				"bzz-raw://62a9302254cdb78a1fd25e431724573c510e3f38695fb7b12f0d511746cd0d1a",
+				"dweb:/ipfs/QmZ7VKQt6mmHQfUoe3CdszxcjRBCEj1p6dQTa61dPmaPgf"
 			]
 		},
 		"JudgeReg.sol": {

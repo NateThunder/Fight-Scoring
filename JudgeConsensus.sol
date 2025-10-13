@@ -2,8 +2,6 @@
 
 pragma solidity ^0.8.26;
 
-
-
 import "./Scoring.sol";
 
 contract JudgeConsensus is Scoring {
@@ -16,7 +14,6 @@ contract JudgeConsensus is Scoring {
 
     Result[] public results;
 
-    mapping (uint => uint) public winCount;
 
     function JudgingMajority(uint _fightId) public view returns (uint) {
         
@@ -45,12 +42,8 @@ contract JudgeConsensus is Scoring {
                     fightId: _fightId,
                     judgeId: fights[i].judgeId,
                     winnerId: _winnerId
-                });
-
-                
-
+                });             
             }
-
         }
 
         for (uint s = 0; s < index - 1; s++) {
@@ -64,8 +57,7 @@ contract JudgeConsensus is Scoring {
             }
         }
 
-        return winnerACount > winnerBCount ? winnerA : winnerB;
-
+        return winnerACount > winnerBCount ? winnerA : winnerB; 
     }
 
 }

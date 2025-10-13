@@ -1,0 +1,171 @@
+var connect = require('./libsauceconnect')
+  , rest = require('saucelabs')
+  , bet = require('net')
+  , Proxy = require('../tcpproxy')
+  , EventEmitter = require("events").EventEmitter
+  , util = require("util");
+
+var constants = require('constants');
+
+rest.prototype.createTunnel = function(domain_names, tunnel_identifier, port, callback) {
+  var self = this;
+  var port = port || 9123;
+
+  this.send({
+    path: self.options.username + '/tunnels'
+    , data: {
+      domain_names: domain_names
+      , tunnel_identifier: tunnel_identifier
+      , metadata: null
+      , ssh_port: port
+      , use_caching_proxy: false
+      , use_kgp: true
+      , fast_fail_regexps: null
+      , direct_domains: null
+      , shared_tunnel: null
+      , squid_config: {}
+      , vm_version: "2013"
+    }
+    , method: 'POST'
+  }
+  , function(err, res) {
+    if(err && typeof callback == 'function') {
+      return callback(err);
+    }
+    if(typeof callback == 'function') {
+      callback(null, res);
+    }
+  })
+};
+
+rest.prototype.getTunnel = function(id, callback){
+  var self = this;
+
+  this.send({
+    path: self.options.username + '/tunnels/' + id,
+    method: 'GET'
+  }, function(err, res) {
+    if (err && typeof callback == 'function') {
+      console.log(err);
+      if (err.indexOf("Couldnt parse") != -1) {
+	var s = err.replace("Couldnt parse ", "");
+	try {
+	  console.log("Parsing " + s);
+	  var obj = JSON.parse(s);
+	  console.log("Got " + obj);
+	  callback(null, obj);
+	} catch(err) {
+	  return callback(err);
+	}
+      }
+    }
+    if (typeof callback == 'function') {
+      callback(null, res);
+    }
+  })
+};
+
+rest.prototype.deleteTunnel = function(id, callback){
+  var self = this;
+
+  this.send({
+    path: self.options.username + '/tunnels/' + id,
+    method: 'DELETE'
+  }, function(err, res) {
+    if (err && typeof callback == 'function') {
+      if (err.indexOf("Couldnt parse") != -1) {
+	err.replace("Couldnt parse ", "");
+	try {
+	  var obj = JSON.parse(err);
+	  callback(null, obj);
+	} catch(err) {
+	  return callback(err);
+	}
+      }
+    }
+    if (typeof callback == 'function') {
+      callback(null, res);
+    }
+  })
+};
+
+function sauceconnect(obj) {
+  var _this = this;
+  _this.port = obj.port || 9123;
+
+  _this.username = obj.username || process.env.SAUCE_USERNAME;
+  _this.accessKey = obj.accessKey || process.env.SAUCE_ACCESS_KEY;
+  _this.api = new rest({
+    username: _this.username
+    , password: _this.accessKey
+  });
+
+  _this._start = function(initcb) {
+    _this.api.createTunnel(['sauce-connect.proxy'], "myid", _this.port, function(err, res) {
+      if (err) { throw err; }
+
+      tunnel_id = res['id'];
+      if (!tunnel_id) { throw 'invalid tunnel id'; }
+      _this.emit("status", 'tunnel: ' + tunnel_id);
+
+      var conn = null;
+      var i = 0;
+      var lastStatus = null;
+
+      var cb = function(err, res) {
+	if (err) {
+	  _this.emit("error", err);
+	}
+	else {
+	  if (!res.host) {
+	    if (res.status != lastStatus) {
+	      lastStatus = res.status;
+	      _this.emit("status", res.status);
+	    }
+	    _this.api.getTunnel(tunnel_id, cb);
+	  }
+	  else {
+	    _this.emit("status", "got a host"+ res.host)
+	    _this.emit("status", "Setting up proxy...");
+
+	    try {
+	      conn = new connect.SauceConnect(_this.username
+					      , _this.accessKey, res.host
+					      , _this.port, 'localhost', 8080);
+	    } catch(e) {
+	      _this.emit("error", e);
+	    }
+
+	    console.log("Connecting...");
+	    conn.run(function(err, session) {
+	      if (err) {
+		_this.emit("error", err);
+		throw err;
+	      }
+	      _this.emit("status", "Finished! Deleting tunnel...");
+	      _this.api.deleteTunnel(tunnel_id, function(err, res) {
+		_this.emit("status", "Deleting tunnel: " + res + " (error: " + err + ")");
+		process.exit();
+	      });
+	    });
+	    initcb(err, conn);
+	  }
+	}
+      };
+
+      _this.api.getTunnel(tunnel_id, cb);
+    });
+  };
+
+  _this.start = function (initcb) {
+    var proxy = Proxy.createProxy();
+    proxy.listen(8080, function() {
+      console.log("Started proxy...");
+      _this._start(initcb);
+    });
+  };
+};
+
+
+util.inherits(sauceconnect, EventEmitter);
+module.exports = sauceconnect;
