@@ -20,7 +20,7 @@ contract Scoring is MatchReg {
         uint judgeId; // judges[judgesId].name
     }
 
-    Fight[] private fights;    // array of fight struct
+    Fight[] public fights;    // array of fight struct
     
     
 // Modifier to make sure score is within limit -------------------------------------------------------
