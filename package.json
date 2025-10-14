@@ -1,0 +1,10 @@
+{
+  "devDependencies": {
+    "@cspotcode/source-map-support": "^0.8.1",
+    "@nomicfoundation/hardhat-toolbox": "^6.1.0",
+    "@types/node": "^22.18.10",
+    "hardhat": "^2.22.6",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
