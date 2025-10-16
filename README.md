@@ -1,7 +1,3 @@
-Absolutely, Nathan. Here's a refreshed version of your README that integrates the new contracts — `Consensus.sol`, `Scoring.sol`, and `JudgeRanking.sol` — while preserving your modular architecture and open-source clarity:
-
----
-
 ## 🥊 What this is
 
 A modular Solidity project exploring how combat sports scoring could work on Ethereum. It separates responsibilities into simple, auditable contracts:
@@ -93,7 +89,3 @@ Copy your `.sol` files into the `contracts` folder and write tests in the `test`
 ## 🧪 Future Vision
 
 Once the on-chain logic is stable, external oracles (like Sherdog or other MMA data sources) will replace local registries for real-time fighter and match data. The end goal is an **open, auditable system** where fight results and judging decisions can be verified transparently on-chain.
-
----
-
-Let me know if you'd like this scaffolded into a `README.md` file or want badges, visuals, or usage examples added.
