@@ -1,225 +1,326 @@
-# Fight-Scoring (Ethereum Smart Contracts)
+```markdown
+# Fight Scoring — Collusion-Resistant On-Chain Judging
 
-Transparent, auditable fight scoring on-chain: register fighters and judges, submit round scores, reach judge consensus, and reward aligned judges.
+A minimal on-chain system for scoring fights with a focus on integrity, auditability, and adversarial inputs. Judges submit round scores, the system aggregates per-judge winners and produces a majority winner, then rewards aligned judges.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)]()
+This repo is being hardened for security-oriented hackathons using commit–reveal, strict phase timing, and clean invariants.
 
 ---
 
 ## Table of Contents
-
-1. [Overview](#overview)  
-2. [Architecture & Modules](#architecture--modules)  
-3. [Contract API & Key Functions](#contract-api--key-functions)  
-4. [Setup & Usage](#setup--usage)  
-5. [Example Flows](#example-flows)  
-6. [Future Roadmap](#future-roadmap)  
-7. [Security & Caveats](#security--caveats)  
-8. [License & Credits](#license--credits)
-
----
-
-## Overview
-
-This project implements a modular system for scoring fights on Ethereum:
-
-- Fighters and judges can be registered on-chain  
-- Matches are created by specifying participant fighters and judge panels  
-- Judges submit per-round scores  
-- A consensus logic computes the winner  
-- Judges are tracked and rewarded based on alignment with consensus  
-
-Use this for testing, prototyping, or as a basis for more advanced scoring systems or oracle integration.
+- [Motivation](#motivation)
+- [High-Level Design](#high-level-design)
+- [Contracts](#contracts)
+- [Security Model](#security-model)
+  - [Commit–Reveal](#commitreveal)
+  - [Phases and Deadlines](#phases-and-deadlines)
+  - [Events](#events)
+- [Data Model](#data-model)
+- [Development](#development)
+- [Testing](#testing)
+- [Demo Script (90 seconds)](#demo-script-90-seconds)
+- [Prioritized To-Do List](#prioritized-to-do-list)
+- [License](#license)
 
 ---
 
-## Architecture & Modules
-
-Here’s a breakdown of your contracts and how they interact:
-
-| Module | Responsibility |
-|---|---|
-| `FighterReg.sol` | Register, query, and manage fighter identities |
-| `JudgeReg.sol` | Register, query, and manage judges |
-| `MatchReg.sol` | Create matches, link fighters + judges |
-| `Scoring.sol` | Judges submit scores for each round |
-| `JudgeConsensus.sol` | Aggregate judge scores and determine winner |
-| `JudgeRankPayout.sol` | Track judge alignment and handle incentive payouts |
-
-The flow is: register entities → create match → judges submit rounds → consensus determines winner → update judge stats & payouts.
+## Motivation
+Aggregating sensitive human inputs on-chain is hard. Scores are low-entropy and easy to guess or front-run. Collusion can sway outcomes. This project demonstrates a compact pattern to:
+- bind scores to a judge and round,
+- hide them until reveal,
+- enforce one submission per judge per round,
+- compute a majority winner from persisted, auditable results,
+- pay aligned judges while tracking reputation.
 
 ---
 
-## Contract API & Key Functions
+## High-Level Design
+**Flow**
+1. Register fighters, matches, and judges.
+2. **Commit phase:** each judge commits a hash of their round scores with a private salt.
+3. **Reveal phase:** judge reveals scores and salt; contract verifies commitment, accepts exactly once.
+4. After all rounds, finalize the fight:
+   - compute per-judge winners,
+   - persist results for this fight,
+   - determine the majority winner (or draw),
+   - update judge reputation,
+   - enable payouts from a separate token.
 
-Below are representative function signatures (adjust param names as in your code). Use these in your README so users know what methods are available.
+**Why this way**
+- Commit–reveal prevents guessing and front-running of low-range scores.
+- Storing results once avoids O(n) scans over historical data.
+- Clear events and phase checks make audits and demos painless.
 
-### FighterReg.sol
+---
+
+## Contracts
+- `FighterReg.sol` — registers fighters.
+- `JudgeReg.sol` — registers judges and owners.
+- `MatchReg.sol` — creates matches and sets round counts.
+- `Scoring.sol` — per-round judge scoring (migrating to commit–reveal).
+- `JudgeConsensus.sol` — per-judge winners and majority winner for a fight.
+- `JudgeRankPayout.sol` — judge reputation and payouts (will hold a token reference).
+- `FightPoint.sol` — ERC20 implementation used for payouts (will be externalized).
+
+> Note: some names and shapes will be tightened as part of the to-do list.
+
+---
+
+## Security Model
+
+### Commit–Reveal
+Judges commit before the commit deadline, then reveal between commit and reveal deadlines.
+
+**Commit (off-chain):**
+```
+
+commitment = keccak256(abi.encode(
+"FIGHT_SCORING_V1",
+judgeAddress,
+fightId,
+roundId,
+scoreA,         // uint8
+scoreB,         // uint8
+salt            // bytes32 random
+));
+
+````
+
+**On-chain storage:**
+```solidity
+mapping(uint256 => mapping(uint256 => mapping(address => bytes32))) public commitOf;
+// fightId => roundId => judge => commitment
+
+mapping(uint256 => mapping(uint256 => mapping(address => bool))) public revealed;
+````
+
+**Reveal:**
 
 ```solidity
-function registerFighter(address owner, string calldata name) external returns (uint256 fighterId);
-function getFighter(uint256 fighterId) external view returns (address owner, string memory name);
-function totalFighters() external view returns (uint256);
+require(block.timestamp >= commitDeadline && block.timestamp < revealDeadline, "Phase");
+require(!revealed[fightId][roundId][msg.sender], "Already revealed");
 
-JudgeReg.sol
+bytes32 expected = keccak256(abi.encode(
+  "FIGHT_SCORING_V1",
+  msg.sender,
+  fightId,
+  roundId,
+  scoreA,
+  scoreB,
+  salt
+));
+require(commitOf[fightId][roundId][msg.sender] == expected, "Bad reveal");
 
-function registerJudge(address judgeAddr, string calldata name) external returns (uint256 judgeId);
-function getJudge(uint256 judgeId) external view returns (address judgeAddr, string memory name);
-function totalJudges() external view returns (uint256);
+// accept score once
+revealAndStore(...);
+```
 
-MatchReg.sol
+**Salt rules**
 
-function createMatch(
-  uint256 fighterAId,
-  uint256 fighterBId,
-  uint256[] calldata judgeIds
-) external returns (uint256 matchId);
+* 32 random bytes, new per commit.
+* Keep it secret until reveal.
+* Never derive from predictable chain data.
 
-function getMatch(uint256 matchId) external view returns (
-  uint256 fighterA,
-  uint256 fighterB,
-  uint256[] memory judgeIds
-);
+### Phases and Deadlines
 
-Scoring.sol
+Per fight and round:
 
-function submitRoundScore(
-  uint256 matchId,
-  uint8 roundNumber,
-  uint256 judgeId,
-  uint256 fighterAScore,
-  uint256 fighterBScore
-) external;
+```solidity
+struct Phase { uint64 commitDeadline; uint64 revealDeadline; }
+mapping(uint256 => mapping(uint256 => Phase)) public phaseOf;
+```
 
-function getRoundScore(
-  uint256 matchId,
-  uint8 roundNumber,
-  uint256 judgeId
-) external view returns (uint256 fighterAScore, uint256 fighterBScore);
+* Commit allowed: `now < commitDeadline`
+* Reveal allowed: `commitDeadline <= now < revealDeadline`
+* Submissions outside windows revert.
 
-JudgeConsensus.sol
+### Events
 
-function computeWinner(uint256 matchId) external view returns (uint256 winningFighterId);
+Emit on every state transition:
 
-function getJudgeConsensusScore(uint256 matchId, uint256 judgeId) external view returns (uint256 totalAScore, uint256 totalBScore);
+* `ScoreCommitted(judge, fightId, roundId, commitment)`
+* `ScoreRevealed(judge, fightId, roundId, scoreA, scoreB)`
+* `RoundClosed(fightId, roundId)`
+* `ResultStored(fightId, judge, winnerId)`
+* `MajoritySet(fightId, winnerId)`
+* `JudgeRankChanged(judgeId, newRank)`
+* `PayoutSent(judge, amount)`
 
-JudgeRankPayout.sol
+---
 
-function updateJudgeRank(uint256 judgeId) external;
-function rewardJudges(uint256 matchId) external;
-function getJudgeRank(uint256 judgeId) external view returns (uint256 rankScore);
+## Data Model
 
-(If your code uses different names or extra parameters, replace them accordingly.)
+**Scores**
 
-⸻
+```solidity
+struct Score { uint8 a; uint8 b; bool exists; }
+mapping(uint256 => mapping(uint256 => mapping(uint256 => Score))) public scoreOf;
+// fightId => roundId => judgeId
+```
 
-Setup & Usage
+**Judge assignment**
 
-Prerequisites
-	•	Node ≥ 18
-	•	npm (or pnpm)
-	•	Hardhat
-	•	(Optional) .env with RPC & private key for deployment
+```solidity
+mapping(uint256 => uint256[]) public judgeIdsByFight; // fightId => list of judgeIds
+```
 
-Getting started
+**Results per fight**
 
-git clone https://github.com/NateThunder/Fight-Scoring.git
-cd Fight-Scoring
-npm install
+```solidity
+struct Result { uint256 judgeId; uint256 winnerId; } // winnerId: fighterAId, fighterBId, or 0 for draw
+mapping(uint256 => Result[]) public resultsByFight; // recomputed & stored once at finalization
+```
 
-Compile:
+**Token for payouts**
 
-npx hardhat compile
+```solidity
+IERC20 public token; // set in constructor; do not inherit ERC20 in payout contract
+```
 
-Run tests:
+---
 
-npx hardhat test
+## Development
 
+### Prereqs
 
-⸻
+* Node 18+
+* PNPM or NPM
+* Foundry (recommended) or Hardhat
 
-Example Flows
+### Install
 
-Here’s how someone could use your system in a script (TypeScript + ethers v6 style):
+```bash
+pnpm install
+# or npm ci
+```
 
-import { ethers } from "hardhat";
+### Build & Lint
 
-async function scenario() {
-  const [deployer] = await ethers.getSigners();
+```bash
+# Foundry
+forge build
+# Static analysis (optional but encouraged)
+slither .
+solhint 'contracts/**/*.sol'
+```
 
-  const FighterReg = await ethers.getContractFactory("FighterReg");
-  const fighterReg = await FighterReg.deploy();
-  await fighterReg.waitForDeployment();
+---
 
-  const JudgeReg = await ethers.getContractFactory("JudgeReg");
-  const judgeReg = await JudgeReg.deploy();
-  await judgeReg.waitForDeployment();
+## Testing
 
-  const MatchReg = await ethers.getContractFactory("MatchReg");
-  const matchReg = await MatchReg.deploy();
-  await matchReg.waitForDeployment();
+### Unit tests
 
-  const Scoring = await ethers.getContractFactory("Scoring");
-  const scoring = await Scoring.deploy();
-  await scoring.waitForDeployment();
+* One submission per judge per round.
+* Score bounds `0..10`.
+* Duplicate commit or reveal reverts.
+* Late commit or reveal reverts.
 
-  const JudgeConsensus = await ethers.getContractFactory("JudgeConsensus");
-  const consensus = await JudgeConsensus.deploy();
-  await consensus.waitForDeployment();
+### Property / fuzz (Foundry or Echidna)
 
-  const JudgeRankPayout = await ethers.getContractFactory("JudgeRankPayout");
-  const payout = await JudgeRankPayout.deploy();
-  await payout.waitForDeployment();
+* Totals never overflow.
+* Majority winner invariant is permutation-independent.
+* Finalization is idempotent.
+* No cross-fight data leakage.
 
-  // Register fighters
-  const fighterAId = await fighterReg.registerFighter(deployer.address, "Alpha");
-  const fighterBId = await fighterReg.registerFighter(deployer.address, "Bravo");
+### Suggested scripts
 
-  // Register judges
-  const judge1 = await judgeReg.registerJudge(deployer.address, "Judge 1");
-  const judge2 = await judgeReg.registerJudge(deployer.address, "Judge 2");
-  const judge3 = await judgeReg.registerJudge(deployer.address, "Judge 3");
+```bash
+forge test -vv
+npm run slither
+npm run coverage
+```
 
-  // Create match
-  const matchId = await matchReg.createMatch(fighterAId, fighterBId, [judge1, judge2, judge3]);
+---
 
-  // Judges submit round scores
-  await scoring.submitRoundScore(matchId, 1, judge1, 10, 9);
-  await scoring.submitRoundScore(matchId, 1, judge2, 9, 10);
-  await scoring.submitRoundScore(matchId, 1, judge3, 10, 9);
+## Demo Script (90 seconds)
 
-  // ... more rounds
+1. Deploy registries, scoring, consensus, payout with token address.
+2. Register fighters A/B and three judges.
+3. Create match with N rounds and set per-round deadlines.
+4. For Round 1:
 
-  // Compute winner
-  const winner = await consensus.computeWinner(matchId);
-  console.log("Winner fighter id:", winner);
-}
+   * Judge commits `keccak256(encode(..., salt))`.
+   * Try to reveal early (revert), then reveal in window (success).
+   * Attempt duplicate reveal (revert).
+5. Finalize fight:
 
-You can similarly show UI or Remix flows.
+   * Contract stores per-judge winners and majority.
+   * Reputation updated, payouts enabled.
+6. Call payout. Show `PayoutSent` events.
 
-⸻
+---
 
-Future Roadmap
-	•	Better tie-break logic (e.g. split decisions)
-	•	Weighting judges by past performance
-	•	Elo or ranking for fighters
-	•	Integrate with oracles for match metadata
-	•	Gas optimizations & batching submissions
-	•	Audit & hardened security
+## Prioritized To-Do List
 
-⸻
+### Easiest
 
-Security & Caveats
-	•	Research / prototype only — do not use without a security audit
-	•	Prevent duplicate submissions per judge/round
-	•	Handle edge cases (ties, missing judges)
-	•	Validate inputs (round number bounds, valid match/judge/fighter IDs)
-	•	Protect against reentrancy, overflows, gas limits
+1. **Rename misleading params/modifiers**
+   Make names match roles, e.g. fix `onlyFighter(uint _judgeId)`.
+2. **Enforce score bounds**
+   Centralize `require(score <= 10)` checks for A and B.
+3. **Emit events**
+   Add all events listed in [Events](#events).
+4. **One submission per judge per round**
+   Use `scoreOf[fightId][roundId][judgeId]` with `exists` flag. Reject duplicates.
+5. **Tighten types**
+   Use `uint8` for scores, `uint16` for round counts, `uint64` for timestamps.
+6. **Delete dead state**
+   Remove or start using any unreferenced mappings and arrays.
 
-⸻
+### Still easy, slightly spicier
 
-License & Credits
+7. **Fix array misuse in payouts**
+   Iterate arrays you actually populate (`winningJudgeA`/`winningJudgeB`) and remove stray `winningJudges`.
+8. **Reset per-fight counters**
+   Zero counters like `judgeCountA/B` at the start of each calculation.
+9. **Separate token from payout logic**
+   Hold `IERC20 token` in storage instead of inheriting `ERC20` in the payout contract.
+10. **Access control**
+    Restrict who can create matches, assign judges, finalize fights, and trigger payouts.
 
-This project is currently unlicensed. If you want to allow use, you might add an MIT or AGPL license.
+### Medium
 
-Developed by Nathan. Contributions welcome—if you fix bugs, I (the AI) might pretend to care.
+11. **Persist results once**
+    On finalization, write `resultsByFight[fightId]` and stop rescanning global arrays.
+12. **Correct majority winner**
+    Implement a clean tally for two fighters plus draw; handle 1/2/3-judge cases deterministically.
+13. **Index data**
+    Replace global scans with `scoreOf` and `judgeIdsByFight`. Reads should be O(rounds × judges) per fight.
+14. **Phase-aware writes**
+    Disallow scoring or revealing outside the correct window, even before full commit–reveal lands.
+15. **Payouts from stored winners**
+    Compute winners once, pay from that list, revert if empty.
+
+### Hard
+
+16. **Add commit–reveal**
+    Bind to `(judge, fightId, roundId, scoreA, scoreB, salt)` with a domain tag.
+17. **Add round timing**
+    `commitDeadline` and `revealDeadline` per round, strictly enforced.
+18. **Reputation mechanics**
+    Update rank with correct vs majority; cap step size so one fight can’t nuke rank.
+19. **Challenge window**
+    Allow third parties to challenge invalid reveals; loser pays bounty.
+20. **Property-based tests and fuzzing**
+    Invariants for uniqueness, bounds, phase discipline, and majority stability.
+21. **Static analysis + CI**
+    Wire `slither`, `solhint`, coverage; fail CI on missing checks or unchecked returns.
+22. **Finalization pipeline**
+    Single entry point: close reveal, store results, set majority, update reputation, emit events, unlock payout. Idempotent.
+
+### Optional (polish and prize bait)
+
+23. **Judge gating**
+    Allowlist or attestations for judge eligibility; public can still verify results.
+24. **VRF spot checks**
+    Randomly force some rounds to reveal first to stress coordination.
+25. **Minimal ZK privacy**
+    Prove “score in 0..10 and matches commit” without exposing linkage across rounds.
+
+---
+
+## License
+
+MIT
+::contentReference[oaicite:0]{index=0}
+```
